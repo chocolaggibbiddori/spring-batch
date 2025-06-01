@@ -28,4 +28,4 @@ spring:
   batch:
     initialize-schema: always
     job:
-      enabled: true
+      enabled: false
