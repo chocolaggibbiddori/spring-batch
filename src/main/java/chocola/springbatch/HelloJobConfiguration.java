@@ -30,10 +30,8 @@ public class HelloJobConfiguration {
     private Step helloFirstStep() {
         return stepBuilderFactory
                 .get("helloFirstStep")
-                .tasklet((contribution, chunkContext) -> {
-                    log.info(">>> Hello Spring Batch First Step <<<");
-                    return RepeatStatus.FINISHED;
-                })
+                .tasklet(new CustomTasklet())
+                .allowStartIfComplete(true)
                 .build();
     }
 
