@@ -6,7 +6,6 @@ import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
-import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -17,31 +16,43 @@ public class HelloJobConfiguration {
 
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
+    private final ExecutionContextTasklet1 tasklet1;
+    private final ExecutionContextTasklet2 tasklet2;
+    private final ExecutionContextTasklet3 tasklet3;
+    private final ExecutionContextTasklet4 tasklet4;
 
     @Bean
     public Job helloJob() {
         return jobBuilderFactory
                 .get("helloJob")
-                .start(helloFirstStep())
-                .next(helloSecondStep())
+                .start(step1())
+                .next(step2())
+                .next(step3())
+                .next(step4())
                 .build();
     }
 
-    private Step helloFirstStep() {
-        return stepBuilderFactory
-                .get("helloFirstStep")
-                .tasklet(new CustomTasklet())
-                .allowStartIfComplete(true)
+    private Step step1() {
+        return stepBuilderFactory.get("step1")
+                .tasklet(tasklet1)
                 .build();
     }
 
-    private Step helloSecondStep() {
-        return stepBuilderFactory
-                .get("helloSecondStep")
-                .tasklet((contribution, chunkContext) -> {
-                    log.info(">>> Hello Spring Batch Second Step <<<");
-                    return RepeatStatus.FINISHED;
-                })
+    private Step step2() {
+        return stepBuilderFactory.get("step2")
+                .tasklet(tasklet2)
+                .build();
+    }
+
+    private Step step3() {
+        return stepBuilderFactory.get("step3")
+                .tasklet(tasklet3)
+                .build();
+    }
+
+    private Step step4() {
+        return stepBuilderFactory.get("step4")
+                .tasklet(tasklet4)
                 .build();
     }
 }
