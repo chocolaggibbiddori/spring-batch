@@ -22,7 +22,7 @@ public class HelloJobConfiguration {
     public Job helloJob() {
         return jobBuilderFactory
                 .get("helloJob")
-                .preventRestart()
+                .incrementer(new CustomJobParametersIncrementer())
                 .start(step1())
                 .next(step2())
                 .build();
@@ -32,7 +32,7 @@ public class HelloJobConfiguration {
         return stepBuilderFactory.get("step1")
                 .tasklet((contribution, chunkContext) -> {
                     System.out.println("step 1");
-                    throw new RuntimeException("error");
+                    return RepeatStatus.FINISHED;
                 })
                 .build();
     }
