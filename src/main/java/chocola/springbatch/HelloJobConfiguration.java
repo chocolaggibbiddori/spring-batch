@@ -24,6 +24,7 @@ public class HelloJobConfiguration {
         return jobBuilderFactory
                 .get("helloJob")
                 .incrementer(new RunIdIncrementer())
+                .validator(new CustomJobParametersValidator())
                 .start(step1())
                 .next(step2())
                 .build();
