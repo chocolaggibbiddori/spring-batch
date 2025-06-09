@@ -6,7 +6,6 @@ import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
-import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -22,14 +21,26 @@ public class HelloJobConfiguration {
     public Job helloJob() {
         return jobBuilderFactory
                 .get("helloJob")
-                .incrementer(new RunIdIncrementer())
                 .start(step1())
+                .next(step2())
                 .build();
     }
 
     private Step step1() {
         return stepBuilderFactory.get("step1")
                 .tasklet(new CustomTasklet())
+                .startLimit(5)
+                .allowStartIfComplete(true)
+                .build();
+    }
+
+    private Step step2() {
+        return stepBuilderFactory.get("step2")
+                .tasklet((contribution, chunkContext) -> {
+                    System.out.println("step 2");
+                    throw new RuntimeException("error");
+                })
+                .startLimit(3)
                 .build();
     }
 }
